@@ -1,3 +1,3 @@
 export interface CreateExampleDto {
-    description: string;
+  description: string;
 }
