@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Example, ExampleDocument } from './schemas/example.schema';
 import { Connection, Model } from 'mongoose';
@@ -17,8 +17,14 @@ export class ExampleService {
     return document.save();
   }
 
-  public delete(id: string): Promise<ExampleDocument | null> {
-    return this.ExampleModel.findByIdAndDelete(id);
+  public async delete(id: string): Promise<ExampleDocument | null> {
+    const deletedDocument = await this.ExampleModel.findByIdAndDelete(id);
+
+    if (!deletedDocument) {
+      throw new NotFoundException(`Document with ID ${id} not found`);
+    }
+
+    return deletedDocument;
   }
 
   public async update(

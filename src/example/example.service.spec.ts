@@ -4,6 +4,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Example, ExampleDocument } from './schemas/example.schema';
 import { Model } from 'mongoose';
 import { CreateExampleDto } from './interfaces/dto/create-example';
+import { NotFoundException } from '@nestjs/common';
 
 /**
  * MockExampleModel — это класс-заглушка для тестирования методов Mongoose Model.
@@ -105,15 +106,18 @@ describe('ExampleService', () => {
     });
 
     /**
-     * Тестирует метод `delete`, возвращая `null`, если документ не найден.
+     * Тестирует метод `delete`, возвращая `NotFoundException`, если документ не найден.
      */
-    it('should return null if document is not found', async () => {
+    it('should throw NotFoundException if document is not found', async () => {
       const id = 'nonexistentId';
-      MockExampleModel.findByIdAndDelete.mockResolvedValueOnce(null);
+      jest
+        .spyOn(MockExampleModel, 'findByIdAndDelete')
+        .mockResolvedValueOnce(null);
 
-      const result = await service.delete(id);
-
-      expect(result).toBeNull();
+      await expect(service.delete(id)).rejects.toThrow(NotFoundException);
+      await expect(service.delete(id)).rejects.toThrow(
+        `Document with ID ${id} not found`,
+      );
     });
   });
 
