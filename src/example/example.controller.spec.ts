@@ -4,7 +4,7 @@
  */
 
 import * as request from 'supertest';
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { ExampleController } from './example.controller';
 import { INestApplication, NotFoundException } from '@nestjs/common';
 import { ExampleService } from './example.service';
